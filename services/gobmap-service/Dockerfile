@@ -1,4 +1,4 @@
-FROM eclipse-temurin:latest
+FROM eclipse-temurin:21.0.7_6-jdk
 LABEL authors="daniel"
 
 WORKDIR /root

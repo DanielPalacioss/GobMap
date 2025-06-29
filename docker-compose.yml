@@ -7,11 +7,12 @@ services:
       context: services/gobmap-service
       dockerfile: Dockerfile
     ports:
-      - ${GOBMAP_SERVICE_PORT}:8080
+      - 8080:${GOBMAP_SERVICE_PORT}
     environment:
       USER_DB: ${USERNAME_DB}
       PASSWORD_DB: ${PASSWORD_DB}
-      NAME_DB: ${NAME_DB}
+      GOBMAP_SERVICE_PORT: ${GOBMAP_SERVICE_PORT}
+      HOST_POSTGRES: ${HOST_POSTGRES}
     networks:
       - gobmap-network
     depends_on:
@@ -22,13 +23,14 @@ services:
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_DB: ${NAME_DB}
+      POSTGRES_DB: db_gobmap
       POSTGRES_USER: ${USERNAME_DB}
       POSTGRES_PASSWORD: ${PASSWORD_DB}
     networks:
       - gobmap-network
     volumes:
-      - gobmap-volume:/var/lib/postgres
+      - gobmap-volume:/var/lib/postgresql/data
+      - ./init:/docker-entrypoint-initdb.d
 
 volumes:
   gobmap-volume:
