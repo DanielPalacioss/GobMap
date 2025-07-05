@@ -1,9 +1,9 @@
 server:
-  port: ${GOBMAP_SERVICE_PORT}
+  port: ${ACCESS_CONTROL_SERVICE_PORT}
 
 spring:
   application:
-    name: gobmap
+    name: access-control
 
   r2dbc:
     url: r2dbc:postgresql://${HOST_POSTGRES}:5432/db_gobmap?currentSchema=sc_gobmap&ssl=false

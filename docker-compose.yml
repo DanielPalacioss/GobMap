@@ -1,5 +1,23 @@
 services:
 
+  access-control-service:
+    image: access-control-service
+    container_name: access-control
+    build:
+      context: services/access-control-service
+      dockerfile: Dockerfile
+    ports:
+      - 8081:${ACCESS_CONTROL_SERVICE_PORT}
+    networks:
+      - gobmap-network
+    environment:
+      DB_USER:
+      DB_PASSWORD:
+      ACCESS_CONTROL_SERVICE_PORT: ${ACCESS_CONTROL_SERVICE_PORT}
+      HOST_POSTGRES: ${HOST_POSTGRES}
+    depends_on:
+      - postgres
+
   gobmap-service:
     image: gobmap-service
     container_name: gobmap
@@ -7,16 +25,17 @@ services:
       context: services/gobmap-service
       dockerfile: Dockerfile
     ports:
-      - 8080:${GOBMAP_SERVICE_PORT}
+      - 8082:${GOBMAP_SERVICE_PORT}
     environment:
-      USER_DB: ${USERNAME_DB}
-      PASSWORD_DB: ${PASSWORD_DB}
+      DB_USER: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
       GOBMAP_SERVICE_PORT: ${GOBMAP_SERVICE_PORT}
       HOST_POSTGRES: ${HOST_POSTGRES}
     networks:
       - gobmap-network
     depends_on:
       - postgres
+      - access-control-service
 
   postgres:
     image: postgres
@@ -24,8 +43,8 @@ services:
       - "5432:5432"
     environment:
       POSTGRES_DB: db_gobmap
-      POSTGRES_USER: ${USERNAME_DB}
-      POSTGRES_PASSWORD: ${PASSWORD_DB}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     networks:
       - gobmap-network
     volumes:
